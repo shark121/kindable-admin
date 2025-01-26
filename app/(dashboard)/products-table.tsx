@@ -42,9 +42,9 @@ export function ProductsTable({
   }
 
   return (
-    <Card>
+ <Card>
       <CardHeader>
-        <CardTitle>Products</CardTitle>
+        <CardTitle>Fundraisers</CardTitle>
         <CardDescription>
           Manage your products and view their sales performance.
         </CardDescription>
@@ -56,11 +56,11 @@ export function ProductsTable({
               <TableHead className="hidden w-[100px] sm:table-cell">
                 <span className="sr-only">Image</span>
               </TableHead>
-              <TableHead>Name</TableHead>
+              <TableHead>Title</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Price</TableHead>
+              <TableHead className="hidden md:table-cell">Raised Amount</TableHead>
               <TableHead className="hidden md:table-cell">
-                Total Sales
+                Goal Amount
               </TableHead>
               <TableHead className="hidden md:table-cell">Created at</TableHead>
               <TableHead>
@@ -70,7 +70,7 @@ export function ProductsTable({
           </TableHeader>
           <TableBody>
             {products.map((product) => (
-              <Product key={product.id} product={product} />
+              <Product key={product.id} fundraiser={product} />
             ))}
           </TableBody>
         </Table>

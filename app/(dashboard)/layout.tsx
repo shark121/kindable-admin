@@ -7,6 +7,7 @@ import {
   PanelLeft,
   Settings,
   ShoppingCart,
+  PlusIcon,
   Users2
 } from 'lucide-react';
 
@@ -74,8 +75,8 @@ function DesktopNav() {
           <Home className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="#" label="Orders">
-          <ShoppingCart className="h-5 w-5" />
+        <NavItem href="/add" label="Orders">
+          <PlusIcon className="h-5 w-5" />
         </NavItem>
 
         <NavItem href="/" label="Products">

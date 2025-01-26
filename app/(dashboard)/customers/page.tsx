@@ -1,3 +1,4 @@
+
 import {
   Card,
   CardContent,
@@ -5,15 +6,23 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card';
+// import {use} from "react"
+import { Suspense } from 'react';
+import CustomerTable from './customers-table';
 
 export default function CustomersPage() {
+  
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <Card>
       <CardHeader>
-        <CardTitle>Customers</CardTitle>
-        <CardDescription>View all customers and their orders.</CardDescription>
+        <CardTitle>Donors</CardTitle>
+        <CardDescription>View all donors and donations.</CardDescription>
       </CardHeader>
-      <CardContent></CardContent>
+      <CardContent>
+        <CustomerTable />
+      </CardContent>
     </Card>
+    </Suspense>
   );
 }

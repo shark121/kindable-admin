@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
+import { FundraiserSchemaType } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -10,31 +11,36 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
-import { SelectProduct } from '@/lib/db';
+// import { SelectProduct } from '@/lib/db';
 import { deleteProduct } from './actions';
+import Donation from 'images/svg/donate';
 
-export function Product({ product }: { product: SelectProduct }) {
+
+export function Product({ fundraiser }: { fundraiser: FundraiserSchemaType }) {
+  console.log(fundraiser);
   return (
     <TableRow>
       <TableCell className="hidden sm:table-cell">
-        <Image
-          alt="Product image"
+        {/* <Image
+          alt="fundraiser image"
           className="aspect-square rounded-md object-cover"
           height="64"
-          src={product.imageUrl}
+          src={fundraiser.imageUrl}
           width="64"
-        />
+        /> */}
+        <Donation size={64} />
       </TableCell>
-      <TableCell className="font-medium">{product.name}</TableCell>
+      <TableCell className="font-medium">{fundraiser.title}</TableCell>
       <TableCell>
         <Badge variant="outline" className="capitalize">
-          {product.status}
+          {fundraiser.status}
         </Badge>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{`$${product.price}`}</TableCell>
-      <TableCell className="hidden md:table-cell">{product.stock}</TableCell>
+      <TableCell className="hidden md:table-cell">{`$${fundraiser.raisedAmount}`}</TableCell>
+      <TableCell className="hidden md:table-cell">{fundraiser.goalAmount}</TableCell>
       <TableCell className="hidden md:table-cell">
-        {product.availableAt.toLocaleDateString("en-US")}
+        {/* {product.availableAt.toLocaleDateString("en-US")} */}
+        {fundraiser.createdAt}
       </TableCell>
       <TableCell>
         <DropdownMenu>
