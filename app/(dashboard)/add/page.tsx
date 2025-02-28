@@ -15,24 +15,57 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { on } from 'events';
-import { FundraiserSchemaType } from '@/lib/types';
+import { FundraiserSchemaType, FundraiserSchema, CreatorSchemaType } from '@/lib/types';
+import { generateRandomId } from '@/lib/utils';
 
 const formSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.'
-  })
+  title: z
+    .string()
+    .min(1, {
+      message:
+        'name must be at least 1 character long, between 10 and 20 characters recommended'
+    })
+    .max(50, { message: 'The name should have less than 50 characters' }),
+
+  category: z.string().min(1, { message: 'Category is required.' }),
+
+  startDate: z
+    .string()
+    .date()
+    .refine(
+      (date) => {
+        return new Date(date) > new Date(Date.now());
+      },
+      { message: 'The start date is invalid' }
+    ),
+
+  endDate: z
+    .string()
+    .date()
+    .refine(
+      (date) => {
+        return new Date(date) > new Date(Date.now());
+      },
+      { message: 'The end date is invalid' }
+    ),
+
+  description: z.string(),
+  goalAmount: z.string().default('0'),
+  raisedAmount: z.string().default('0')
 });
 
 export default function AddFundraiser() {
-  //   const form = useForm({
-  //     resolver: zodResolver(formSchema),
-  //     defaultValues: {
-  //         username: "",
-  //         },
-  //   })
-
   const form = useForm<
-    Pick<FundraiserSchemaType, 'title' | 'startDate' | 'endDate' | 'category' | 'description' | 'goalAmount' | 'raisedAmount'>
+    Pick<
+      FundraiserSchemaType,
+      | 'title'
+      | 'startDate'
+      | 'endDate'
+      | 'category'
+      | 'description'
+      | 'goalAmount'
+      | 'raisedAmount'
+    >
   >({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -41,15 +74,21 @@ export default function AddFundraiser() {
       endDate: new Date().toISOString(),
       category: 'education',
       description: '',
-      goalAmount: 0,
-      raisedAmount: 0
+      goalAmount: '0',
+      raisedAmount: '0'
     }
   });
 
-  const onSubmit = (e: any) => console.log(e);
+  function onSubmit(e: z.infer<typeof formSchema>) {
+    const fundraiserId = generateRandomId(5); 
+    const createdAt = new Date().toISOString();
+    const status = 'active';
+    const creator = sessionStorage.getItem('user') as unknown as  CreatorSchemaType;
+    const formData  = {...e} 
+  }
 
   return (
-    <div className='min-h-screen flex justify-center items-start md:items-center p-8 min-w-full'>
+    <div className="min-h-screen flex justify-center items-start md:items-center p-8 min-w-full">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -129,7 +168,7 @@ export default function AddFundraiser() {
               <FormItem>
                 <FormLabel>Goal Amount</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} min={0}/>
+                  <Input type="number" {...field} min={0} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -143,7 +182,7 @@ export default function AddFundraiser() {
               <FormItem>
                 <FormLabel>Raised Amount</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} min={0}/>
+                  <Input type="number" {...field} min={0} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -44,7 +44,7 @@ export const FundraiserSchema = z
       .refine(
         (date) => {
           return (
-            datePattern.test(date) && new Date(date) < new Date(Date.now())
+           new Date(date) > new Date(Date.now())
           );
         },
         { message: 'The start date is invalid' }
@@ -56,20 +56,17 @@ export const FundraiserSchema = z
       .refine(
         (date) => {
           return (
-            datePattern.test(date) && new Date(date) < new Date(Date.now())
+            new Date(date) > new Date(Date.now())
           );
         },
         { message: 'The end date is invalid' }
       ),
     // time: z.string(),
     description: z.string(),
-    // imageFile: z.any(),
-    // creatorMailAdress: z.string().email(),
-    createdAt: z.string().date(),
-    // imageUrl: z.string().url(),
-    // fallBackMailAdress: z.string().email(),
+    goalAmount: z.string().default('0'),
+    raisedAmount: z.string().default('0'),
     creator: CreatorSchema,
-    goalAmount: z.number(),
+    createdAt: z.string().date(),
     status: z.enum(['active', 'inactive']),
     category: z.enum([
       'education',
@@ -79,7 +76,6 @@ export const FundraiserSchema = z
       'animal',
       'other'
     ]),
-    raisedAmount: z.number()
   })
   .strict();
 

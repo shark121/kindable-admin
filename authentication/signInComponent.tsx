@@ -7,7 +7,7 @@ import { Input } from "../components/ui/input";
 import GoogleAuth from "./googleAuth";
 import Cookies from "js-cookie";
 import Image from "next/image";
-import Logo from "../images/svg/Google__G__logo.svg.png";
+import Logo from "../images/svg/logo";
 import PasswordInput from "@/components/ui/passwordInputType";
 import { useRouter } from "next/navigation";
 import { useToast } from "hooks/use-toast";
@@ -27,8 +27,9 @@ export default function SignInComponent() {
         // Signed in
         const user = userCredential.user;
         console.log(user);
-        setCookie("user", JSON.stringify(user), 7);
-        sessionStorage.setItem("user", JSON.stringify(user));
+        // setCookie("user", JSON.stringify(user), 7);
+        Cookies.set("user", JSON.stringify(user), { expires: 7 });
+        // sessionStorage.setItem("user", JSON.stringify(user));
 
         toast({ description: "Signed in successfully" });
         // window.location.href = "/";
@@ -65,9 +66,8 @@ export default function SignInComponent() {
 
   return (
     <div className=" flex flex-col items-center justify-center text-black">
-      <div>
-        <Logo />
-      </div>
+  
+      <Logo/>
       <div className="w-[20rem]  flex flex-col items-center justify-center gap-4">
         <Input
           type="text"

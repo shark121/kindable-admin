@@ -4,13 +4,13 @@ import {
   GoogleAuthProvider,
   getAdditionalUserInfo,
 } from "firebase/auth";
-import GoogleSVG from "../public/images/Google__G__logo.svg.png";
+import GoogleSVG from "../images/svg/Google__G__logo.svg.png";
 import { auth, database } from "../firebase.config";
 import Image from "next/image";
-import { setCookie } from "@/lib/utils";
+// import { setCookie } from "@/lib/utils";
+import Cookies from "js-cookie";
 import { setDoc, doc, collection } from "firebase/firestore";
 import { useToast } from "hooks/use-toast";
-// import {useRouter} from "next/navigation";
 
 
 export default function GoogleAuth() {
@@ -61,8 +61,8 @@ async function triggerPopup() {
         photoURL,
       };
 
-      setCookie("user", JSON.stringify(user), 1);
-      sessionStorage.setItem("user", JSON.stringify(user));
+      Cookies.set("user", JSON.stringify(user), { expires: 7 });
+      // sessionStorage.setItem("user", JSON.stringify(user));
       // window.location.href = "/";
 
       const userInfoWithExtraFields = {
