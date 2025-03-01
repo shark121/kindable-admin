@@ -1,5 +1,5 @@
 import LineChart from '@/components/charts/lineChart';
-import RenderProgress from '@/components/homeComponents/renderProgress';
+import RenderFundraiser from '@/components/homeComponents/renderFundraiser';
 import { FundraiserSchemaType } from '@/lib/types';
 import { data } from 'autoprefixer';
 import { use } from 'react';
@@ -12,13 +12,13 @@ async function EventsList() {
   const eventsDataToJson = await eventsData.json();
 
   return (
-    <div className="flex">
+    <div className="flex flex-col gap-4 w-full bg-red-300">
       {eventsDataToJson.map((el: FundraiserSchemaType, index: number) => {
         if (el.status == 'active')
           return (
-            <div key={index} className='flex flex-col'>
-              <div>{el.title}</div>
-            <RenderProgress fundraiser={el}/>
+            <div key={index} className='flex'>
+              {/* <div>{el.title}</div> */}
+            <RenderFundraiser fundraiser={el}/>
             </div>
           );
       })}
