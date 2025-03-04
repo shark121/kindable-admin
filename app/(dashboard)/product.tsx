@@ -11,10 +11,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
 import { TableCell, TableRow } from '@/components/ui/table';
+import Link from 'next/link';
 // import { SelectProduct } from '@/lib/db';
 import { deleteProduct } from './actions';
 import Donation from 'images/svg/donate';
-
+import { products } from '@/lib/db';
 
 export function Product({ fundraiser }: { fundraiser: FundraiserSchemaType }) {
   console.log(fundraiser);
@@ -27,7 +28,7 @@ export function Product({ fundraiser }: { fundraiser: FundraiserSchemaType }) {
           height="64"
           src={fundraiser.imageUrl}
           width="64"
-        /> */}
+          /> */}
         <Donation size={64} />
       </TableCell>
       <TableCell className="font-medium">{fundraiser.title}</TableCell>
@@ -37,7 +38,9 @@ export function Product({ fundraiser }: { fundraiser: FundraiserSchemaType }) {
         </Badge>
       </TableCell>
       <TableCell className="hidden md:table-cell">{`$${fundraiser.raisedAmount}`}</TableCell>
-      <TableCell className="hidden md:table-cell">{fundraiser.goalAmount}</TableCell>
+      <TableCell className="hidden md:table-cell">
+        {fundraiser.goalAmount}
+      </TableCell>
       <TableCell className="hidden md:table-cell">
         {/* {product.availableAt.toLocaleDateString("en-US")} */}
         {fundraiser.createdAt}
@@ -52,11 +55,24 @@ export function Product({ fundraiser }: { fundraiser: FundraiserSchemaType }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem>Edit</DropdownMenuItem>
             <DropdownMenuItem>
-              <form action={deleteProduct}>
+              <Link
+                className="w-full h-full"
+                href={`/fundraisers/edit/${fundraiser.id}`}
+              >
+                Edit{' '}
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Link
+                className="w-full h-full"
+                href={`/fundraisers/view/${fundraiser.id}`}
+              >
+                View
+              </Link>
+              {/* <form action={deleteProduct}>
                 <button type="submit">Delete</button>
-              </form>
+                </form> */}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

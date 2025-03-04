@@ -1,11 +1,7 @@
-
-
-type FormDataType = Record<string, any>;
-
-
-
-
-type ProcessedDataType<T> = T;
+import {generateRandomId} from "@/lib/utils"
+import {CreatorSchemaType, FundraiserSchema, FundraiserSchemaType} from "@/lib/types"
+import {z} from "zod"
+import { useForm, FieldValues, UseFormReturn } from "react-hook-form";
 
 /**
  * Generic onSubmit handler that can work with any form data type
@@ -16,8 +12,13 @@ type ProcessedDataType<T> = T;
  * @param errorCallback - Optional function to handle errors
  */
 
-function onSubmit<T extends FormDataType, P = T>(
-  form : ,
+type FormDataType = Record<string, any>;
+
+type ProcessedDataType<T> = T;
+
+export function onSubmit<T extends FormDataType, P = T>(
+    //react useForm instace type
+  form : UseFormReturn<FieldValues, any, undefined> ,
   formData: T,
   submitCallback: (data: ProcessedDataType<P>) => Promise<any>,
   validateCallback?: (data: T, setError: (field: keyof T, message: string) => void) => boolean,
@@ -25,7 +26,7 @@ function onSubmit<T extends FormDataType, P = T>(
   errorCallback?: (error: any) => void
 ) {
   try {
-    // Custom validation if provided
+
     if (validateCallback) {
       const setError = (field: keyof T, message: string) => {
         if (form && form.setError) {
@@ -51,12 +52,10 @@ function onSubmit<T extends FormDataType, P = T>(
       if (!defaultValidation) return;
     }
     
-    // Transform data if needed
     const processedData = transformCallback 
       ? transformCallback(formData) 
       : formData as unknown as P;
     
-    // Submit the processed data
     submitCallback(processedData as ProcessedDataType<P>)
       .then(response => {
         console.log("Data submitted successfully", response);
@@ -84,9 +83,7 @@ function onSubmit<T extends FormDataType, P = T>(
   }
 }
 
-/**
- * Default validation for fundraiser data
- */
+
 function validateFundraiserData(
   data: {
     startDate?: string;
@@ -99,7 +96,7 @@ function validateFundraiserData(
 ): boolean {
   let isValid = true;
   
-  // Validate dates if they exist
+  
   if (data.startDate && data.endDate) {
     const startDate = new Date(data.startDate);
     const endDate = new Date(data.endDate);
@@ -110,7 +107,7 @@ function validateFundraiserData(
     }
   }
   
-  // Validate amounts if they exist
+  
   if (data.goalAmount !== undefined) {
     const goalAmount = parseFloat(data.goalAmount);
     
@@ -137,11 +134,10 @@ function validateFundraiserData(
   return isValid;
 }
 
-// Example usage in the component
-const handleFormSubmit = (formData: z.infer<typeof formSchema>) => {
-  // Transform function to convert form data to complete fundraiser object
-  const transformToFundraiser = (data: z.infer<typeof formSchema>): FundraiserSchemaType => {
-    // Get creator data from sessionStorage with error handling
+
+const handleFormSubmit = (formData: z.infer<typeof FundraiserSchema>) => {
+  const transformToFundraiser = (data: z.infer<typeof FundraiserSchema>): FundraiserSchemaType => {
+    
     const creatorData = sessionStorage.getItem('user');
     let creator: CreatorSchemaType;
     
@@ -170,7 +166,6 @@ const handleFormSubmit = (formData: z.infer<typeof formSchema>) => {
     };
   };
   
-  // Submit function - handles the actual API call
   const submitFundraiser = async (fundraiser: FundraiserSchemaType): Promise<any> => {
 
     return new Promise(resolve => 
@@ -178,11 +173,9 @@ const handleFormSubmit = (formData: z.infer<typeof formSchema>) => {
     );
   };
   
-  // Error handling function
   const handleError = (error: any) => {
     if (error.message.includes("User data not found")) {
       alert("Please log in to create a fundraiser");
-      // Optionally redirect to login page
       // window.location.href = "/login";
     } else {
       alert(error.message || "Failed to create fundraiser. Please try again.");
@@ -190,25 +183,12 @@ const handleFormSubmit = (formData: z.infer<typeof formSchema>) => {
   };
   
   // Use the generic onSubmit function
-  onSubmit<z.infer<typeof formSchema>, FundraiserSchemaType>(
-    formData,
-    submitFundraiser,
-    undefined, // Use default validation
-    transformToFundraiser,
-    handleError
-  );
+//   onSubmit<z.infer<typeof FundraiserSchema>, FundraiserSchemaType>(
+//     formData,
+//     submitFundraiser,
+//     undefined, // Use default validation
+//     transformToFundraiser,
+//     handleError
+//   );
 };
 
-// Update the form component to use the new handler
-return (
-  <div className="min-h-screen flex justify-center items-start md:items-center p-8 min-w-full">
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleFormSubmit)}
-        className="space-y-8 w-full"
-      >
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
-  </div>
-);

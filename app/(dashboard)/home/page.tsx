@@ -12,7 +12,7 @@ async function EventsList() {
   const eventsDataToJson = await eventsData.json();
 
   return (
-    <div className="flex flex-col gap-4 w-full bg-red-300">
+    <div className="flex flex-col gap-4 w-full ">
       {eventsDataToJson.map((el: FundraiserSchemaType, index: number) => {
         if (el.status == 'active')
           return (

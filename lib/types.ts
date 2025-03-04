@@ -1,6 +1,5 @@
-import exp from 'constants';
-import Donation from 'images/svg/donate';
 import { z } from 'zod';
+import {categories} from "app/../constants/categories"
 
 const datePattern = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -8,6 +7,7 @@ export const CreatorSchema = z.object({
   name: z.string(),
   uid: z.string(),
   email: z.string().email(),
+  token: z.string().optional(),
   mobile: z
     .string()
     .optional()
@@ -29,7 +29,7 @@ export const CreatorSchema = z.object({
 
 export const FundraiserSchema = z
   .object({
-    id: z.number(),
+    id: z.string(),
     title: z
       .string()
       .min(1, {
@@ -38,29 +38,8 @@ export const FundraiserSchema = z
       })
       .max(50, { message: 'The name should have less than 50 characters' }),
 
-    startDate: z
-      .string()
-      .date()
-      .refine(
-        (date) => {
-          return (
-           new Date(date) > new Date(Date.now())
-          );
-        },
-        { message: 'The start date is invalid' }
-      ),
-
-    endDate: z
-      .string()
-      .date()
-      .refine(
-        (date) => {
-          return (
-            new Date(date) > new Date(Date.now())
-          );
-        },
-        { message: 'The end date is invalid' }
-      ),
+    startDate: z.string().date(),
+    endDate: z.string().date(),
     // time: z.string(),
     description: z.string(),
     goalAmount: z.string().default('0'),
@@ -68,24 +47,24 @@ export const FundraiserSchema = z
     creator: CreatorSchema,
     createdAt: z.string().date(),
     status: z.enum(['active', 'inactive']),
-    category: z.enum([
-      'education',
-      'health',
-      'environment',
-      'humanitarian',
-      'animal',
-      'other'
-    ]),
+    category: z.enum(categories),
   })
-  .strict();
+  // .strict()
+  // .refine((data) => new Date(data.endDate) > new Date(data.startDate), {
+  //   message: 'End date must be after start date',
+  //   path: ['endDate']
+  // });
+
+
+  
 
 const DonationSchema = z.object({
   id: z.string(),
   amount: z.number(),
   donorId: z.string(),
-  fundraiserId: z.string(),
+  fundraiserID: z.string(),
   createdAt: z.string().datetime(),
-  paymentMethod: z.string().optional(),
+  paymentMethod: z.string().optional()
 });
 
 const DonorSchema = z.object({
@@ -100,6 +79,34 @@ const DonorSchema = z.object({
   defaultPaymentMethod: z.string().optional(),
   Donations: DonationSchema.array().optional()
 });
+
+export type UserInfo = {
+  uid: string;
+  email: string | null;
+  emailVerified: boolean;
+  photoURL: string | null;
+  displayName: string | null;
+  phoneNumber: string | null;
+  providerData?: any; // Consider typing this further if possible
+};
+
+export type UserInfoWithToken = UserInfo & {
+  token: any; // Consider typing this further if possible (e.g., IdTokenResult)
+};
+
+export type AdditionalUserInfo = {
+  isNewUser: boolean;
+};
+
+export type UserData = {
+  accountInfo: {
+    name: string | null;
+    uid: string;
+    email: string | null;
+    emailVerified: boolean;
+  };
+  fundraisers: FundraiserSchemaType[]; // Consider typing these arrays further
+};
 
 export type FundraiserSchemaType = z.infer<typeof FundraiserSchema>;
 export type CreatorSchemaType = z.infer<typeof CreatorSchema>;

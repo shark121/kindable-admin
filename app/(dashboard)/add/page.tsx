@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Button } from '@/components/ui/button';
+import Selector from '@/components/blocks/categorySelector';
 import {
   Form,
   FormControl,
@@ -15,9 +16,13 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { on } from 'events';
-import { FundraiserSchemaType, FundraiserSchema, CreatorSchemaType } from '@/lib/types';
+import {
+  FundraiserSchemaType,
+  FundraiserSchema,
+  CreatorSchemaType
+} from '@/lib/types';
 import { generateRandomId } from '@/lib/utils';
-
+import Cookies from "js-cookie"
 const formSchema = z.object({
   title: z
     .string()
@@ -72,19 +77,37 @@ export default function AddFundraiser() {
       title: '',
       startDate: new Date().toISOString(),
       endDate: new Date().toISOString(),
-      category: 'education',
+      category: 'Education',
       description: '',
       goalAmount: '0',
       raisedAmount: '0'
     }
   });
 
-  function onSubmit(e: z.infer<typeof formSchema>) {
-    const fundraiserId = generateRandomId(5); 
+  async function onSubmit(e: z.infer<typeof formSchema>) {
+    const id = generateRandomId(5);
     const createdAt = new Date().toISOString();
     const status = 'active';
-    const creator = sessionStorage.getItem('user') as unknown as  CreatorSchemaType;
-    const formData  = {...e} 
+    const creator = JSON.parse(Cookies.get(
+      'user'
+    )
+  || "{}") as unknown as CreatorSchemaType;
+    const getFormData = { ...e, id, createdAt, status, creator };
+    
+    
+    delete creator.token
+    const formData = new FormData();
+
+    formData.append('fundraiserData', JSON.stringify(getFormData));
+
+    const response = await fetch('/api/data/create/fundraiser/', {
+      method: 'POST',
+      body: formData
+    });
+
+    const responseToText = await response.json();
+
+    console.log(responseToText);
   }
 
   return (
@@ -148,6 +171,7 @@ export default function AddFundraiser() {
               </FormItem>
             )}
           />
+          
           <FormField
             control={form.control}
             name="description"

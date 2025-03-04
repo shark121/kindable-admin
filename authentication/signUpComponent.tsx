@@ -4,7 +4,7 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification
 } from 'firebase/auth';
-import { auth, database } from '../firebase.config';
+import { auth, database } from '../app/firebase.config';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import Cookies from 'js-cookie';

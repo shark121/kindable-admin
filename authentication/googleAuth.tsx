@@ -1,119 +1,59 @@
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  getAdditionalUserInfo,
-} from "firebase/auth";
-import GoogleSVG from "../images/svg/Google__G__logo.svg.png";
-import { auth, database } from "../firebase.config";
+"use client"
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import GoogleSVG from "images/svg/Google__G__logo.svg.png"
+import { auth } from "../app/firebase.config";
 import Image from "next/image";
-// import { setCookie } from "@/lib/utils";
-import Cookies from "js-cookie";
-import { setDoc, doc, collection } from "firebase/firestore";
-import { useToast } from "hooks/use-toast";
-
+import { useToast } from   "../hooks/use-toast";
+import { storeIfNewUser, storeUserInfo } from "@/lib/auth";
 
 export default function GoogleAuth() {
   const { toast } = useToast();
 
-const provider = new GoogleAuthProvider();
+  const provider = new GoogleAuthProvider();
 
-async function triggerPopup() {
-  return signInWithPopup(auth, provider)
-    .then((result) => {
-      // This gives you a Google Access Token. You can use it to access the Google API.
+  async function triggerPopup() {
+    return signInWithPopup(auth, provider)
+      .then(async (result) => {
 
-      console.log("used pop up...........................");
-      const credential = GoogleAuthProvider.credentialFromResult(result);
-      const token = credential && credential.accessToken;
+        try{
 
-      console.log(result);
+          await storeUserInfo(result.user)
+          await storeIfNewUser(result)
 
-      // The signed-in user info.
-      // const user = result.user;
+        }catch (e){
+          
+          toast({ description: String(e), variant: "destructive" });
+        }
 
-      const {
-        uid,
-        email,
-        emailVerified,
-        photoURL,
-        displayName,
-        phoneNumber,
-        providerData,
-      } = result.user;
-
-      const user = {
-        uid,
-        email,
-        emailVerified,
-        photoURL,
-        displayName,
-        phoneNumber,
-        providerData,
-      };
-
-      const userInfo = {
-        uid,
-        email,
-        emailVerified,
-        displayName,
-        phoneNumber,
-        photoURL,
-      };
-
-      Cookies.set("user", JSON.stringify(user), { expires: 7 });
-      // sessionStorage.setItem("user", JSON.stringify(user));
-      // window.location.href = "/";
-
-      const userInfoWithExtraFields = {
-        accountInfo: { name: displayName, uid, email, emailVerified: true },
-        events: [],
-        tickets: [],
-        followers: [],
-        following: [],
-      };
-
-      const additionalUserInfo = result ? getAdditionalUserInfo(result) : null;
-      if (result && additionalUserInfo && additionalUserInfo.isNewUser) {
-        setDoc(
-          doc(collection(database, "users"), userInfo.uid),
-          userInfoWithExtraFields ,
-          { merge: true }
-        );
+        toast({ description: "Signed in successfully" });
         
-        sessionStorage.setItem("user", JSON.stringify(userInfoWithExtraFields));
-      }
+        window.location.href = "/";
 
      
-      console.log(userInfo);
-      //   console.log(user);
-      toast({ description: "signed in successfully" });
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.customData.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
 
-      setTimeout(()=>window.history.back(),1000)
+        toast({
+          description: error.message,
+          variant: "destructive",
+        });
+        // ...
+      });
+  }
 
-      return user;
-
-      // ...
-    })
-    .catch((error) => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.customData.email;
-      // The AuthCredential type that was used.
-      const credential = GoogleAuthProvider.credentialFromError(error);
-      // ...
+  function handleOnClick() {
+    triggerPopup().then((result) => {
+      console.log(result);
     });
-}
+  }
 
-function handleOnClick() {
-  triggerPopup().then((result) => {
-    console.log(result);
-  });
-}
-
-  
   return (
     <button
       className="h-10 w-[15rem] flex items-center justify-center gap-4 rounded relative my-3 bg-gray-100"

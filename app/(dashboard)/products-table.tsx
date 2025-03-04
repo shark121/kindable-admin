@@ -16,19 +16,21 @@ import {
   CardTitle
 } from '@/components/ui/card';
 import { Product } from './product';
-import { SelectProduct } from '@/lib/db';
 import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { FundraiserSchemaType } from '@/lib/types';
 
 export function ProductsTable({
   products,
   offset,
-  totalProducts
+  totalProducts,
+  keyword,
 }: {
-  products: SelectProduct[];
+  products: FundraiserSchemaType[];
   offset: number;
   totalProducts: number;
+  keyword?: string
 }) {
   let router = useRouter();
   let productsPerPage = 5;
@@ -69,9 +71,12 @@ export function ProductsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {products.map((product) => (
-              <Product key={product.id} fundraiser={product} />
-            ))}
+            {products.map((product) => {
+                if(keyword === undefined) return <Product key={product.id} fundraiser={product} />
+
+                return product.status === keyword ? <Product key={product.id} fundraiser={product} /> : null
+            }
+            )}
           </TableBody>
         </Table>
       </CardContent>

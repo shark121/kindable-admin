@@ -7,6 +7,7 @@ import { useSearchParams } from "next/navigation";
 import { useToast } from "hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { ToastAction } from "@/components/ui/toast";
+import { LoginForm } from "@/components/auth/login";
 
 export default function Home() {
   const [hasAccount, setHasAccount] = useState(true);
@@ -38,6 +39,11 @@ export default function Home() {
   // function navigateToPrev(){
   //   window.history.back();
   // }
+
+
+  // return 
+  // <div></div>
+  // <LoginForm/>
 
   return (
     <div className="flex flex-col items-center justify-center m-0 p-0 h-[100vh] w-[100wv] overflow-hidden ">
