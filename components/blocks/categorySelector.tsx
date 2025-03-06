@@ -6,13 +6,16 @@ import {
   SelectValue
 } from "@/components/ui/select";
 
-import {categories} from "app/../constants/categories"
+import {categories} from "../../constants/categories"
 
 
-export default function CategorySelector(props) {
+export default function CategorySelector(
+    ///fingers crossed :DDD
+props:any
+) {
   return (
     <Select
-    
+    {...props}
     >
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder="Theme" />

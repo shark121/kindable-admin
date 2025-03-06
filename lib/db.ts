@@ -41,7 +41,7 @@ export async function getProducts(
 }> {
   // Always search the full table, not per page
 
-  let moreProducts = await (await fetch("http://localhost:5000/fundraisers")).json();
+  let moreProducts = await (await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/read/fundraisers`)).json();
 
 
   if (search) {

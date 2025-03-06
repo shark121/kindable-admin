@@ -1,22 +1,22 @@
-import { data } from 'autoprefixer';
 import { NextRequest, NextResponse } from 'next/server';
+import {getDoc, doc, collection, getDocs} from "firebase/firestore"
+import {database} from "app/firebase.config"
+
+
+const fundraiserCollection = collection(database, "fundraisers")
+
 
 export async function GET(
   req: NextRequest,
   context: { params: Promise<{ data: string[] }> }
 ) {
   const params = await context.params;
-
-  //   console.log(params.data[0], "params data")
-
   const response =
-    params.data.length === 0
-      ? await fetch('http://localhost:5000/fundraisers')
-      : await fetch(
-          `http://localhost:5000/fundraisers/${params.data[0]}`
-        );
-
-  //   console.log(await response.json(), "response data")
-
-  return NextResponse.json(await response.json());
+    params.data === undefined || params.data.length === 0
+      ? (await getDocs(fundraiserCollection)).docs.map(doc => doc.data())
+      : (await getDoc(doc(fundraiserCollection, params.data[0]))).data();
+      // : await fetch(`http://localhost:5000/fundraisers/${params.data[0]}`);
+  
+  console.log(response)
+  return NextResponse.json(response);
 }

@@ -47,6 +47,8 @@ export const FundraiserSchema = z
     creator: CreatorSchema,
     createdAt: z.string().date(),
     status: z.enum(['active', 'inactive']),
+    customThankYouMessage: z.string().optional(),
+    updatedAt: z.string().nullish(),
     category: z.enum(categories),
   })
   // .strict()
@@ -64,7 +66,8 @@ const DonationSchema = z.object({
   donorId: z.string(),
   fundraiserID: z.string(),
   createdAt: z.string().datetime(),
-  paymentMethod: z.string().optional()
+  paymentMethod: z.string(),
+  fundraiserTitle: z.string(),  
 });
 
 const DonorSchema = z.object({

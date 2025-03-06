@@ -22,7 +22,7 @@ export default async function View({ params }: { params: { id: string } }) {
         <div className="flex items-center gap-4">
           <div className="text-[2rem] font-bold">{fundraiser.title}</div>
           <Badge variant="outline" className="font-bold h-[20px]">
-            active
+            {fundraiser.status}
           </Badge>
         </div>
         <Link href={`/fundraisers/edit/${fundraiser.id}`} className="hover:opacity-80 flex">
@@ -61,11 +61,11 @@ export default async function View({ params }: { params: { id: string } }) {
         </div>
         <div className="flex flex-col">
           <div className="text-xs">Start Date</div>
-          <div>{new Date(fundraiser.start_date).toDateString()}</div>
+          <div>{new Date(fundraiser.startDate).toDateString()}</div>
         </div>
         <div className="flex flex-col">
           <div className="text-xs">End Date</div>
-          <div>{new Date(fundraiser.end_date).toDateString()}</div>
+          <div>{new Date(fundraiser.endDate).toDateString()}</div>
         </div>
       </div>
     </div>

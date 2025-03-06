@@ -8,7 +8,10 @@ import {
   Settings,
   ShoppingCart,
   PlusIcon,
-  Users2
+  Users2,
+  Search,
+  MessageCircleCodeIcon,
+  Mail
 } from 'lucide-react';
 
 import {
@@ -75,21 +78,23 @@ function DesktopNav() {
           <Home className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/add" label="Orders">
+        <NavItem href="/add" label="Create Fundraiser">
           <PlusIcon className="h-5 w-5" />
         </NavItem>
 
-        <NavItem href="/" label="Products">
+        <NavItem href="/" label="Fundraisers">
           <Package className="h-5 w-5" />
         </NavItem>
 
         <NavItem href="/customers" label="Customers">
           <Users2 className="h-5 w-5" />
         </NavItem>
-
-        {/* <NavItem href="#" label="Analytics">
-          <LineChart className="h-5 w-5" />
-        </NavItem> */}
+        <NavItem href="/search?q=#" label="Search">
+          <Search className="h-5 w-5" />
+        </NavItem>
+        <NavItem href="#" label="Messages">
+          <Mail className="h-5 w-5" />
+        </NavItem>
       </nav>
       <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-5">
         <Tooltip>

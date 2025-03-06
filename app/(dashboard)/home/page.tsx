@@ -8,7 +8,7 @@ import { Suspense } from 'react';
 
 // Create a separate component for the data fetching part
 async function EventsList() {
-  const eventsData = await fetch('http://localhost:5000/fundraisers');
+  const eventsData = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/read/fundraisers`);
   const eventsDataToJson = await eventsData.json();
 
   return (

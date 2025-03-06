@@ -37,3 +37,14 @@ export async function POST(req: NextRequest) {
 
   return NextResponse.json('success');
 }
+
+export async function PUT(req: NextRequest) {
+  const requestData = (await req.formData()).get(
+    'fundraiserData'
+  ) as unknown as string;
+  const requestDataToJSON = JSON.parse(requestData) as fundraiserUploadType;
+  console.log(requestDataToJSON);
+  const uploadResponse = await addFundraiser(requestDataToJSON);
+
+  return NextResponse.json('update success');
+}

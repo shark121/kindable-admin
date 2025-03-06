@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import {auth} from "app/firebase.config"
 import { storeUserInfo } from '@/lib/auth';
+import {SearchProvider} from "../components/context/searchContext"
 
 onAuthStateChanged(auth, async (user) => {
 
@@ -53,7 +54,11 @@ export default function RootLayout({
         <title></title>
         <meta name="" content="" />
       </Head>
-      <body className="flex min-h-screen w-full flex-col text-gray-800">{children}</body>
+      <body className="flex min-h-screen w-full flex-col text-gray-800">
+        <SearchProvider>
+        {children}
+        </SearchProvider>
+        </body>
       {/* <Analytics /> */}
     </html>
   );

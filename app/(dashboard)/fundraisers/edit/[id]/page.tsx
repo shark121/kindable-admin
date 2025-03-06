@@ -20,10 +20,10 @@ import {
   FundraiserSchema,
   CreatorSchemaType
 } from '@/lib/types';
-import { generateRandomId } from '@/lib/utils';
+import Selector from '@/components/blocks/categorySelector';
 import Cookies from 'js-cookie';
 import { set } from 'date-fns';
-import { ScrollArea } from '@radix-ui/react-scroll-area';
+
 // const formSchema = z.object({
 //   title: z
 //     .string()
@@ -75,6 +75,7 @@ export default function AddFundraiser({
 }) {
   const [creator, setCreator] = useState<CreatorSchemaType | null>(null);
   const [id, setId] = useState('');
+  const [createdAt, setCreatedAt] = useState('');
 
   type formSchema = Pick<
     FundraiserSchemaType,
@@ -86,20 +87,21 @@ export default function AddFundraiser({
     | 'description'
     | 'goalAmount'
     | 'raisedAmount'
+    | "customThankYouMessage"
   >;
 
   const form = useForm<formSchema>({
-    //using any here because im unablae to omit from Fundraiser schema, i hope i grow wiser to fix this
     resolver: zodResolver(z.any()),
     defaultValues: {
       title: '',
       startDate: new Date().toISOString(),
       endDate: new Date().toISOString(),
-      category: 'education',
+      category: 'Education',
       description: '',
       goalAmount: '0',
       raisedAmount: '0',
-      status: 'active'
+      status: 'active',
+      customThankYouMessage: ''
     }
   });
 
@@ -122,40 +124,43 @@ export default function AddFundraiser({
           form.setValue('raisedAmount', String(data.raisedAmount));
           form.setValue(
             'startDate',
-            new Date(data.start_date).toISOString().slice(0, 10)
+            new Date(data.startDate).toISOString().slice(0, 10)
           );
           form.setValue(
             'endDate',
-            new Date(data.end_date).toISOString().slice(0, 10)
+            new Date(data.endDate).toISOString().slice(0, 10)
           );
           form.setValue('title', data.title);
+          form.setValue("customThankYouMessage", data.customThankYouMessage);
+
           setCreator(data.creator);
+          setCreatedAt(data.createdAt);
         });
       }
     })();
   }, []);
 
   async function onSubmit(e: formSchema) {
-    const createdAt = new Date().toISOString();
-    // const creator = JSON.parse(
-    //   Cookies.get('user') || '{}'
-    // ) as unknown as CreatorSchemaType;
-    const getFormData = { ...e, id, createdAt, creator };
+    const updatedAt = new Date().toISOString();
+    const creator = JSON.parse(
+      Cookies.get('user') || '{}'
+    ) as unknown as CreatorSchemaType;
+    const getFormData = { ...e, id, updatedAt, createdAt,  creator };
 
     console.log(getFormData);
-    // delete creator.token;
-    // const formData = new FormData();
+    delete creator.token;
+    const formData = new FormData();
 
-    // formData.append('fundraiserData', JSON.stringify(getFormData));
+    formData.append('fundraiserData', JSON.stringify(getFormData));
 
-    // const response = await fetch('/api/data/create/fundraiser/', {
-    //   method: 'PUT',
-    //   body: formData
-    // });
+    const response = await fetch('/api/data/create/fundraiser/', {
+      method: 'PUT',
+      body: formData
+    });
 
-    // const responseToText = await response.json();
+    const responseToText = await response.json();
 
-    // console.log(responseToText);
+    console.log(responseToText);
   }
 
   return (
@@ -226,7 +231,15 @@ export default function AddFundraiser({
               <FormItem>
                 <FormLabel>Category</FormLabel>
                 <FormControl>
-                  <Input placeholder="education" {...field} />
+                  {/* <Input placeholder="education" {...field} />
+                   */}
+                  <Selector
+                    value={field.value}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                    name="category"
+                    placeholder="Select a category"
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -269,6 +282,21 @@ export default function AddFundraiser({
                 <FormLabel>Raised Amount</FormLabel>
                 <FormControl>
                   <Input type="number" {...field} min={0} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="customThankYouMessage"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Custom Thank You Message</FormLabel>
+                <FormControl>
+                  <div>
+                    <textarea {...field} rows={10} cols={100} />
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
