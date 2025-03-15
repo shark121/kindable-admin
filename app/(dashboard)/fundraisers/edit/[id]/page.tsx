@@ -23,6 +23,7 @@ import {
 import Selector from '@/components/blocks/categorySelector';
 import Cookies from 'js-cookie';
 import { set } from 'date-fns';
+import { UploadIcon } from 'lucide-react';
 
 // const formSchema = z.object({
 //   title: z
@@ -69,9 +70,10 @@ import { set } from 'date-fns';
 // });
 
 export default function AddFundraiser({
-  params
+  params, searchParams
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string }>,
+  searchParams: Promise<{ x_dk: string }>
 }) {
   const [creator, setCreator] = useState<CreatorSchemaType | null>(null);
   const [id, setId] = useState('');
@@ -111,10 +113,13 @@ export default function AddFundraiser({
       console.log(eventID, 'eventID');
       setId(eventID);
       const eventData = localStorage.getItem(eventID);
+       
+      const sp = await searchParams
+      const uid = sp['x_dk'] ?? ''
 
       if (eventData === null) {
         await fetch(
-          `${process.env.NEXT_PUBLIC_URL}/api/data/read/fundraisers/${eventID}`
+          `${process.env.NEXT_PUBLIC_URL}/api/data/read/fundraisers/${uid}/${eventID}`
         ).then(async (res) => {
           const data = await res.json();
 

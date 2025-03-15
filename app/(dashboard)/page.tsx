@@ -6,14 +6,16 @@ import { ProductsTable } from './products-table';
 import { getProducts } from '@/lib/db';
 
 export default async function ProductsPage(props: {
-  searchParams: Promise<{ q: string; offset: string }>;
+  searchParams: Promise<{ q: string; offset: string, x_dk: string }>;
 }) {
   const searchParams = await props.searchParams;
   const search = searchParams.q ?? '';
   const offset = searchParams.offset ?? 0;
+  const userId = searchParams.x_dk;
   const { products, newOffset, totalProducts } = await getProducts(
     search,
-    Number(offset)
+    Number(offset),
+    userId
   );
 
   return (

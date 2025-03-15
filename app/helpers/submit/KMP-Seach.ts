@@ -50,17 +50,7 @@ export function kmpSearch(text: string, pattern: string): number[] {
   }
   
   // Example usage:
-  const text: string = 'ABABABAA';
-  const pattern: string = 'ABA';
-  const results: number[] = kmpSearch(text, pattern);
-  console.log(results); // Output: [ 0, 2, 4 ]
   
-  const text2: string = "THIS IS A TEST TEXT";
-  const pattern2: string = "TEST";
-  const results2: number[] = kmpSearch(text2, pattern2);
-  console.log(results2); // output: [10]
-
-
 
   export function arrayContainsMatch(arr : string[], pattern: string) : boolean {
     for (let el of arr){

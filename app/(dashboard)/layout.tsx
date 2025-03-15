@@ -10,8 +10,7 @@ import {
   PlusIcon,
   Users2,
   Search,
-  MessageCircleCodeIcon,
-  Mail
+   Mail
 } from 'lucide-react';
 
 import {
@@ -89,10 +88,10 @@ function DesktopNav() {
         <NavItem href="/customers" label="Customers">
           <Users2 className="h-5 w-5" />
         </NavItem>
-        <NavItem href="/search?q=#" label="Search">
+        <NavItem href="/search?q=" label="Search">
           <Search className="h-5 w-5" />
         </NavItem>
-        <NavItem href="#" label="Messages">
+        <NavItem href="/mail" label="Messages">
           <Mail className="h-5 w-5" />
         </NavItem>
       </nav>

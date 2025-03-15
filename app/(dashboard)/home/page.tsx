@@ -1,44 +1,26 @@
-import LineChart from '@/components/charts/lineChart';
+import Chart from '@/components/charts/lineChart';
 import RenderFundraiser from '@/components/homeComponents/renderFundraiser';
-import { FundraiserSchemaType } from '@/lib/types';
-import { data } from 'autoprefixer';
-import { use } from 'react';
+import { FundraiserSchemaType, StatisticsSchemaType } from '@/lib/types';
 
-import { Suspense } from 'react';
 
-// Create a separate component for the data fetching part
-async function EventsList() {
-  const eventsData = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/read/fundraisers`);
-  const eventsDataToJson = await eventsData.json();
+export default async function Home({searchParams}:{searchParams:any}) {
 
-  return (
-    <div className="flex flex-col gap-4 w-full ">
-      {eventsDataToJson.map((el: FundraiserSchemaType, index: number) => {
-        if (el.status == 'active')
-          return (
-            <div key={index} className='flex'>
-              {/* <div>{el.title}</div> */}
-            <RenderFundraiser fundraiser={el}/>
-            </div>
-          );
-      })}
-      <div></div>
-    </div>
-  );
-}
+      
+  const qparams =  await  searchParams
+  console.log(qparams["x_dk"], 'qparams');
+  const uid = qparams["x_dk"] ?? ""
+  
+  const eventsData = uid && await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/read/statistics/${uid}`, {
+    // cache:""
+  });
 
-// Create a loading component
-function EventsLoading() {
-  return <div>Loading events...</div>;
-}
+  const eventsDataToJson = await eventsData.json() as {stats : StatisticsSchemaType[]};
 
-export default function Home() {
+  console.log(eventsDataToJson, 'eventsDataToJson');
+
   return (
     <div className="h-full w-full">
-      <LineChart />
-      <Suspense fallback={<EventsLoading />}>
-        <EventsList />
-      </Suspense>
+      <Chart data={eventsDataToJson.stats.reverse()} />
     </div>
   );
 }

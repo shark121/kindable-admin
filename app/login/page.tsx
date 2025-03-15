@@ -11,7 +11,6 @@ import { LoginForm } from "@/components/auth/login";
 
 export default function Home() {
   const [hasAccount, setHasAccount] = useState(true);
-  const searchParams = useSearchParams();
   const { toast } = useToast();
 
   const descriptionsMap: Record<string, string> = {
@@ -20,30 +19,9 @@ export default function Home() {
     "/myEvents": "Sign in to access your events",
   };
 
-  const path: string = searchParams.get("path") || "";
+  
 
-  useEffect(() => {
-    if (path) {
-      console.log(path);
-      toast({
-        title: "Sign In required",
-        description: descriptionsMap[path],
-
-        // action: <ToastAction altText="Goto schedule to undo">Undo</ToastAction>,
-      });
-    }
-  }, []);
-
-  // return <div></div>
-
-  // function navigateToPrev(){
-  //   window.history.back();
-  // }
-
-
-  // return 
-  // <div></div>
-  // <LoginForm/>
+ 
 
   return (
     <div className="flex flex-col items-center justify-center m-0 p-0 h-[100vh] w-[100wv] overflow-hidden ">

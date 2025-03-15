@@ -33,7 +33,8 @@ export const insertProductSchema = createInsertSchema(products);
 
 export async function getProducts(
   search: string,
-  offset: number
+  offset: number,
+  uid : string
 ): Promise<{
   products: any[];
   newOffset: number | null;
@@ -41,7 +42,7 @@ export async function getProducts(
 }> {
   // Always search the full table, not per page
 
-  let moreProducts = await (await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/read/fundraisers`)).json();
+  let moreProducts = await (await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/read/fundraisers/${uid}`)).json();
 
 
   if (search) {

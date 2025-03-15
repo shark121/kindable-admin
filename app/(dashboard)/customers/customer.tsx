@@ -1,3 +1,5 @@
+// "use client";
+
 import {
   Table,
   TableBody,
@@ -6,7 +8,7 @@ import {
   TableRow,
   TableCell
 } from '@/components/ui/table';
-import { DonorSchemaType } from '@/lib/types';
+import { DonorSchemaType, FundraiserSchemaType } from '@/lib/types';
 import Link from 'next/link';
 import {
   DropdownMenu,
@@ -17,8 +19,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
+import Cookies from 'js-cookie';
+import { UserInfo } from '@/lib/types';
 
-export default function Customer({ customer }: { customer: DonorSchemaType }) {
+export default function Customer({ customer, fundraiser }: { customer: DonorSchemaType, fundraiser: FundraiserSchemaType }) {
+
+
   return (
     <TableRow>
       {/* <TableCell className="hidden sm:table-cell">
@@ -51,7 +58,7 @@ export default function Customer({ customer }: { customer: DonorSchemaType }) {
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem>
-              <Link href={`/customers/${customer.id}`} className="w-full h-full">
+              <Link href={`/customers/${fundraiser.id}/${customer.id}`} className="w-full h-full">
                 View
               </Link>
             </DropdownMenuItem>

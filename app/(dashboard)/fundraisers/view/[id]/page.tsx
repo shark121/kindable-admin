@@ -6,12 +6,23 @@ import Donation from 'images/svg/donate';
 import { Edit2Icon } from 'lucide-react';
 import Link from 'next/link';
 
-export default async function View({ params }: { params: { id: string } }) {
+export default async function View({
+  params,
+  searchParams
+}: {
+  params: { id: string };
+  searchParams: Promise<{ x_dk: string }>;
+}) {
   const { id: param } = params;
+  const searchParamsData = await searchParams;
+  const uid = searchParamsData['x_dk'] ?? '';
+
   console.log(param, 'parameter');
 
   const fundraiser = (await (
-    await fetch(`${process.env.NEXT_PUBLIC_URL}/api/data/read/fundraisers/${param}`)
+    await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/data/read/fundraisers/${uid}/${param}`
+    )
   ).json()) as FundraiserSchemaType;
 
   console.log(fundraiser);
@@ -25,7 +36,10 @@ export default async function View({ params }: { params: { id: string } }) {
             {fundraiser.status}
           </Badge>
         </div>
-        <Link href={`/fundraisers/edit/${fundraiser.id}`} className="hover:opacity-80 flex">
+        <Link
+          href={`/fundraisers/edit/${fundraiser.id}`}
+          className="hover:opacity-80 flex"
+        >
           Edit <Edit2Icon size={25} />
         </Link>
       </div>
@@ -34,7 +48,8 @@ export default async function View({ params }: { params: { id: string } }) {
         <div className="w-[60%]">
           <Progress
             value={
-              (Number(fundraiser.raisedAmount) / Number(fundraiser.goalAmount)) *
+              (Number(fundraiser.raisedAmount) /
+                Number(fundraiser.goalAmount)) *
               100
             }
           />

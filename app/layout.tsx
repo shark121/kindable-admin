@@ -3,26 +3,28 @@ import './globals.css';
 // import { Analytics } from '@vercel/analytics/react';
 import Cookies from 'js-cookie';
 import Head from 'next/head';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import {auth} from "app/firebase.config"
+import { auth } from 'app/firebase.config';
 import { storeUserInfo } from '@/lib/auth';
-import {SearchProvider} from "../components/context/searchContext"
+import { SearchProvider } from '../components/context/searchContext';
 
 onAuthStateChanged(auth, async (user) => {
+  console.log('auth');
 
-  console.log("auth")
+  const userDoesNotExist =
+    Cookies.get('user') === null || Cookies.get('user') === undefined;
 
-  const userDoesNotExist = Cookies.get("user") === null || Cookies.get("user") === undefined;
-  
-  console.log(user, "user from layout............")
+  console.log(user, 'user from layout............');
   try {
-    userDoesNotExist && user && user.emailVerified && await storeUserInfo(user);
+    userDoesNotExist &&
+      user &&
+      user.emailVerified &&
+      (await storeUserInfo(user));
   } catch (e) {
     console.log(e);
   }
-})
-
+});
 
 export default function RootLayout({
   children
@@ -31,22 +33,20 @@ export default function RootLayout({
 }) {
   // "use client"
 
-  const userCookie = Cookies.get('user');
+  // const userCookie = Cookies.get('user');
 
   // console.log(userCookie)
 
-  useEffect(()=>{
-    // console.log(window.location.pathname)
-    const shouldNavigate =  !userCookie && (window.location.pathname !== '/login')
+  // useEffect(()=>{
+  //   // console.log(window.location.pathname)
+  //   const shouldNavigate =  !userCookie && (window.location.pathname !== '/login')
 
-      if (shouldNavigate) {
-        window.location.href = '/login';
-        console.log('not user');
-      }
+  //     if (shouldNavigate) {
+  //       window.location.href = '/login';
+  //       console.log('not user');
+  //     }
 
-  },[])
-
-
+  // },[])
 
   return (
     <html lang="en">
@@ -56,9 +56,9 @@ export default function RootLayout({
       </Head>
       <body className="flex min-h-screen w-full flex-col text-gray-800">
         <SearchProvider>
-        {children}
+          <Suspense fallback={<div>Loading...</div>}>{children}</Suspense>
         </SearchProvider>
-        </body>
+      </body>
       {/* <Analytics /> */}
     </html>
   );

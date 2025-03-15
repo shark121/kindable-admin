@@ -20,17 +20,18 @@ import { useRouter } from 'next/navigation';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { FundraiserSchemaType } from '@/lib/types';
+import NotFound from 'not-found';
 
 export function ProductsTable({
   products,
   offset,
   totalProducts,
-  keyword,
+  keyword
 }: {
   products: FundraiserSchemaType[];
   offset: number;
   totalProducts: number;
-  keyword?: string
+  keyword?: string;
 }) {
   let router = useRouter();
   let productsPerPage = 5;
@@ -43,8 +44,10 @@ export function ProductsTable({
     router.push(`/?offset=${offset}`, { scroll: false });
   }
 
+  if(!products) return <NotFound/>;
+
   return (
- <Card>
+    <Card>
       <CardHeader>
         <CardTitle>Fundraisers</CardTitle>
         <CardDescription>
@@ -60,7 +63,9 @@ export function ProductsTable({
               </TableHead>
               <TableHead>Title</TableHead>
               <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Raised Amount</TableHead>
+              <TableHead className="hidden md:table-cell">
+                Raised Amount
+              </TableHead>
               <TableHead className="hidden md:table-cell">
                 Goal Amount
               </TableHead>
@@ -72,11 +77,13 @@ export function ProductsTable({
           </TableHeader>
           <TableBody>
             {products.map((product) => {
-                if(keyword === undefined) return <Product key={product.id} fundraiser={product} />
+              if (keyword === undefined)
+                return <Product key={product.id} fundraiser={product} />;
 
-                return product.status === keyword ? <Product key={product.id} fundraiser={product} /> : null
-            }
-            )}
+              return product.status === keyword ? (
+                <Product key={product.id} fundraiser={product} />
+              ) : null;
+            })}
           </TableBody>
         </Table>
       </CardContent>
@@ -85,7 +92,11 @@ export function ProductsTable({
           <div className="text-xs text-muted-foreground">
             Showing{' '}
             <strong>
-              {Math.max(0, Math.min(offset - productsPerPage, totalProducts) + 1)}-{offset}
+              {Math.max(
+                0,
+                Math.min(offset - productsPerPage, totalProducts) + 1
+              )}
+              -{offset}
             </strong>{' '}
             of <strong>{totalProducts}</strong> products
           </div>
